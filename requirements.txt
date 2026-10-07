@@ -1,0 +1,6 @@
+torch>=2.0
+torchvision>=0.15
+pillow
+matplotlib
+# 可选：YOLOv5/YOLOv8 需要，torchvision 路径用不到
+# ultralytics

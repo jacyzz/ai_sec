@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+
+# 数据与模型权重
+data/
+*.pth
+*.pt
+*.ckpt
+
+# 运行输出（图片/结果）
+outputs/
+outputs_tupatch/
+accuracy_vs_epsilon.png
+
+# 课程资料（非代码）
+*.pdf
+*.docx
+*.doc
+
+# 系统
+.DS_Store
