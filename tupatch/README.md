@@ -172,6 +172,14 @@ python run_seeds.py --coco_root /path/to/coco --seeds 42 43 44 \
 
 `run_seeds.py` 采用上面的 train/val/test 三划分：训练用 train，评估同时报 val 与 test。
 
+**结果是否证定的**：test 集上 Static **0.516±0.027**、Dynamic **0.498±0.006**，
+Δ = −0.018，绝对值小于 Static 的种子标准差 → **动态加权没有可复现的优势**。
+val 集上同样是 −0.007。单 seed 消融里出现的 +0.018 只是种子 42 的抽样波动
+（在 seed 42 上，消融 static 0.485 vs seeds static 0.488，两者一致）。
+
+因此**推荐配置是 static 等权集成**：`--surrogates yolov5s fasterrcnn`，
+不要开 `--dynamic_ensemble`。
+
 ## 指标定义
 
 ```
