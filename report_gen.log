@@ -1,0 +1,29 @@
+[vis] baseline 补丁图保存
+[dataset] 预加载 200 张图片到内存...
+[dataset] 预加载完成
+WARNING ⚠️ torchvision==0.29 is incompatible with torch==2.7.
+Run 'pip install torchvision==0.22' to fix torchvision or 'pip install -U torch torchvision' to update both.
+For a full compatibility table see https://github.com/pytorch/vision#installation
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+WARNING ⚠️ NMS time limit 0.550s exceeded
+[vis] baseline 对比图保存到 outputs_ablation/baseline/cmp
+[vis] eot 补丁图保存
+[dataset] 预加载 200 张图片到内存...
+[dataset] 预加载完成
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+[vis] eot 对比图保存到 outputs_ablation/eot/cmp
+[vis] ensemble 补丁图保存
+[dataset] 预加载 200 张图片到内存...
+[dataset] 预加载完成
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+[vis] ensemble 对比图保存到 outputs_ablation/ensemble/cmp
+[vis] dynamic 补丁图保存
+[dataset] 预加载 200 张图片到内存...
+[dataset] 预加载完成
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+[vis] dynamic 对比图保存到 outputs_ablation/dynamic/cmp
+[chart] 柱状图保存到 outputs_ablation/ablation_chart.png

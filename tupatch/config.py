@@ -58,15 +58,23 @@ class Config:
     # ---- 黑盒模型（仅评估，绝不参与训练）----
     blackbox_models: List[str] = field(default_factory=lambda: ["retinanet"])
 
+    # ---- YOLOv5（官方 ultralytics/yolov5 仓库）----
+    yolov5_repo: Optional[str] = None      # yolov5 仓库路径，None 自动探测 <repo_root>/yolov5
+    yolo_imgsz: int = 640                  # YOLO 输入尺寸（letterbox 目标边长）
+
     # ---- 优化 ----
     optimizer: str = "adam"              # "adam" | "sign"（sign 即 MI-FGSM 形式）
     lr: float = 0.01
     epochs: int = 30
     batch_size: int = 4                  # 每步梯度累积的图片数
-    use_momentum: bool = True            # 是否启用梯度动量
+    use_momentum: bool = False           # 梯度动量（实验表明对本任务无正收益，默认关闭）
     momentum_decay: float = 0.9
     normalize_grad: bool = True          # 梯度 L1 归一化
     tv_lambda: float = 0.1               # TV loss 权重
+
+    # ---- 动态加权集成（Dynamic Reweighted Ensemble）----
+    dynamic_ensemble: bool = False       # 是否按"当前最难攻击的模型权重越大"动态加权
+    ensemble_tau: float = 0.5            # softmax 温度，越大权重越平滑
 
     # ---- EOT（期望变换）----
     eot_rotation_deg: float = 20.0       # 旋转角度范围 (+-)

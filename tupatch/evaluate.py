@@ -16,16 +16,21 @@ from .utils import box_iou
 
 
 def _match_detections(gts_all, dets_all, target_idx, iou_thr, score_thr):
-    """贪心匹配，返回每个 GT 是否被命中，以及用于 AP 的 tp/fp。"""
+    """贪心匹配，返回每个 GT 是否被命中，以及用于 AP 的 tp/fp。
+
+    dets_all 每个元素是一张图的 Detections（batch=1），因此 d.boxes[0] 为该图的
+    [N_i,4] 预测框。
+    """
     matched: List[List[bool]] = [[False] * len(g) for g in gts_all]
     records = []  # (score, img_idx, det_idx)
     for i, d in enumerate(dets_all):
-        for j in range(len(d.scores)):
-            if int(d.labels[j]) != target_idx:
+        boxes, labels, scores = d.boxes[0], d.labels[0], d.scores[0]  # [N_i, ...]
+        for j in range(len(boxes)):
+            if int(labels[j]) != target_idx:
                 continue
-            if float(d.scores[j]) < score_thr:
+            if float(scores[j]) < score_thr:
                 continue
-            records.append((float(d.scores[j]), i, j))
+            records.append((float(scores[j]), i, j))
     records.sort(key=lambda r: -r[0])
 
     tp = [0] * len(records)
@@ -36,7 +41,7 @@ def _match_detections(gts_all, dets_all, target_idx, iou_thr, score_thr):
         if len(g) == 0:
             fp[k] = 1
             continue
-        ious = box_iou(g, d.boxes[j].unsqueeze(0))[:, 0]
+        ious = box_iou(g, d.boxes[0][j].unsqueeze(0))[:, 0]
         best, best_iou = -1, iou_thr
         for m in range(len(g)):
             if matched[i][m]:

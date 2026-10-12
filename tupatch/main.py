@@ -60,7 +60,10 @@ def run_train(cfg: Config) -> None:
     ds = CocoPersonDataset(train_img, ann_train, cfg.target_idx, cfg.num_train, cfg.max_side)
     print(f"[train] 训练图片数={len(ds)}")
 
-    surrogates = [build_detector(s, device, cfg.target_idx) for s in cfg.surrogate_models]
+    surrogates = [
+        build_detector(s, device, cfg.target_idx, cfg.yolov5_repo, cfg.yolo_imgsz)
+        for s in cfg.surrogate_models
+    ]
     print(f"[train] 替代模型={[s.name for s in surrogates]}")
 
     patch = train_patch(cfg, surrogates, ds)
@@ -80,13 +83,13 @@ def run_eval(cfg: Config) -> None:
     patch = None
     patch_path = os.path.join(cfg.out_dir, "patch.pt")
     if os.path.exists(patch_path):
-        ckpt = torch.load(patch_path, map_location="cpu")
+        ckpt = torch.load(patch_path, map_location="cpu", weights_only=False)
         patch = ckpt["patch"]
         print("[eval] 已加载补丁")
 
     results = {}
     for spec in cfg.surrogate_models + cfg.blackbox_models:
-        det = build_detector(spec, device, cfg.target_idx)
+        det = build_detector(spec, device, cfg.target_idx, cfg.yolov5_repo, cfg.yolo_imgsz)
         metrics = evaluate_detector(det, ds, patch, cfg, device)
         results[det.name] = metrics
         print(f"[eval] {det.name:16s} " + "  ".join(
@@ -109,25 +112,46 @@ def main() -> None:
     p.add_argument("--target", type=str, default=None)
     p.add_argument("--epochs", type=int, default=None)
     p.add_argument("--lr", type=float, default=None)
+    p.add_argument("--batch_size", type=int, default=None, help="梯度累积步数")
+    p.add_argument("--num_eot", type=int, default=None, help="每张图每步 EOT 采样次数")
     p.add_argument("--patch_size", type=int, default=None)
     p.add_argument("--patch_ratio", type=float, default=None)
     p.add_argument("--use_momentum", type=lambda x: x.lower() in ("1", "true", "yes"), default=None)
     p.add_argument("--tv_lambda", type=float, default=None)
     p.add_argument("--out_dir", type=str, default=None)
+    p.add_argument("--yolov5_repo", type=str, default=None, help="yolov5 仓库路径（默认自动探测 <repo>/yolov5）")
+    p.add_argument("--yolo_imgsz", type=int, default=None)
+    p.add_argument("--num_train", type=int, default=None)
+    p.add_argument("--num_test", type=int, default=None)
+    p.add_argument("--max_side", type=int, default=None)
     args = p.parse_args()
 
     cfg = Config.load(args.config) if args.config else Config()
+    # eval 默认复用训练时保存的 config.json，保证 surrogate/blackbox/target 与训练一致；
+    # 命令行参数仍可覆盖。
+    if args.command == "eval" and args.config is None:
+        out_dir = args.out_dir or cfg.out_dir
+        saved = os.path.join(out_dir, "config.json")
+        if os.path.exists(saved):
+            cfg = Config.load(saved)
     overrides = {
         "coco_root": args.coco_root,
         "surrogate_models": args.surrogates,
         "target_class": args.target,
         "epochs": args.epochs,
         "lr": args.lr,
+        "batch_size": args.batch_size,
+        "num_eot": args.num_eot,
         "patch_size": args.patch_size,
         "patch_ratio": args.patch_ratio,
         "use_momentum": args.use_momentum,
         "tv_lambda": args.tv_lambda,
         "out_dir": args.out_dir,
+        "yolov5_repo": args.yolov5_repo,
+        "yolo_imgsz": args.yolo_imgsz,
+        "num_train": args.num_train,
+        "num_test": args.num_test,
+        "max_side": args.max_side,
     }
     for k, v in overrides.items():
         if v is not None:

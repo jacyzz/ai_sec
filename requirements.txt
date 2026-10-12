@@ -1,6 +1,23 @@
-torch>=2.0
-torchvision>=0.15
+# TUPatch 依赖（conda env: adv，Python 3.10）
+#
+# 安装说明：本机为 NVIDIA A100 (driver 535 / CUDA 12.2)，已实测 torch 2.7.1+cu126
+# 可正常在该 driver 上运行（torch wheel 自带 CUDA runtime）。
+# 安装命令：
+#   conda activate adv
+#   pip install --no-cache-dir torch==2.7.1 torchvision==0.22.1 \
+#       --index-url https://download.pytorch.org/whl/cu126
+#   pip install -r requirements.txt
+
+# ---- 核心（务必与 torch 版本配套，torchvision 0.22.1 对应 torch 2.7.1）----
+torch==2.7.1
+torchvision==0.22.1
+
+# ---- 数据处理 / 可视化 ----
+numpy
 pillow
 matplotlib
-# 可选：YOLOv5/YOLOv8 需要，torchvision 路径用不到
-# ultralytics
+
+# ---- 可选：YOLOv5/YOLOv8 需要（torchvision 的 Faster R-CNN / RetinaNet / FCOS 路径用不到）----
+# 若要接入 YOLOv5s 作为替代模型，取消注释并安装：
+# ultralytics>=8.1.0
+# opencv-python

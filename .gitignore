@@ -14,10 +14,20 @@ data/
 *.pt
 *.ckpt
 
+# 外部 clone 的 yolov5 仓库（依赖，不纳入本仓库）
+yolov5/
+
 # 运行输出（图片/结果）
 outputs/
 outputs_tupatch/
 accuracy_vs_epsilon.png
+
+# 干净 vs 攻击的对比图：体积大（每方法约 2MB）且可用 make_report.py 重新生成，
+# 报告里的定性结果已收录在 report/figures/comparisons/。summary/results/patch 图仍保留。
+outputs_ablation/*/cmp/
+
+# 外部参考实现（他人代码，仅作对照，不纳入本仓库）
+transferable_patch_core.zip
 
 # 课程资料（非代码）
 *.pdf

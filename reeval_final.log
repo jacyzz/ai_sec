@@ -1,0 +1,53 @@
+device=cuda
+[dataset] 预加载 2000 张图片到内存...
+[dataset] 预加载完成
+[dataset] 预加载 500 张图片到内存...
+[dataset] 预加载完成
+WARNING ⚠️ torchvision==0.29 is incompatible with torch==2.7.
+Run 'pip install torchvision==0.22' to fix torchvision or 'pip install -U torch torchvision' to update both.
+For a full compatibility table see https://github.com/pytorch/vision#installation
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+WARNING ⚠️ NMS time limit 0.550s exceeded
+[baseline] yolov5s      clean_recall=0.490 attack_recall=0.214 asr=0.579
+[baseline] fasterrcnn   clean_recall=0.756 attack_recall=0.584 asr=0.244
+[baseline] retinanet    clean_recall=0.562 attack_recall=0.407 asr=0.293
+[baseline] fcos         clean_recall=0.674 attack_recall=0.498 asr=0.280
+[dataset] 预加载 2000 张图片到内存...
+[dataset] 预加载完成
+[dataset] 预加载 500 张图片到内存...
+[dataset] 预加载完成
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+[eot] yolov5s      clean_recall=0.490 attack_recall=0.132 asr=0.738
+[eot] fasterrcnn   clean_recall=0.756 attack_recall=0.503 asr=0.349
+[eot] retinanet    clean_recall=0.562 attack_recall=0.338 asr=0.411
+[eot] fcos         clean_recall=0.674 attack_recall=0.415 asr=0.400
+[dataset] 预加载 2000 张图片到内存...
+[dataset] 预加载完成
+[dataset] 预加载 500 张图片到内存...
+[dataset] 预加载完成
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+[ensemble] yolov5s      clean_recall=0.490 attack_recall=0.155 asr=0.689
+[ensemble] fasterrcnn   clean_recall=0.756 attack_recall=0.412 asr=0.467
+[ensemble] retinanet    clean_recall=0.562 attack_recall=0.293 asr=0.489
+[ensemble] fcos         clean_recall=0.674 attack_recall=0.356 asr=0.481
+[dataset] 预加载 2000 张图片到内存...
+[dataset] 预加载完成
+[dataset] 预加载 500 张图片到内存...
+[dataset] 预加载完成
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+[dynamic] yolov5s      clean_recall=0.490 attack_recall=0.167 asr=0.670
+[dynamic] fasterrcnn   clean_recall=0.756 attack_recall=0.393 asr=0.492
+[dynamic] retinanet    clean_recall=0.562 attack_recall=0.278 asr=0.516
+[dynamic] fcos         clean_recall=0.674 attack_recall=0.352 asr=0.490
+
+===== 汇总（白盒=参与训练，黑盒=迁移）=====
+method                  yolov5s           fasterrcnn            retinanet                 fcos
+baseline               0.579(W)             0.244(B)             0.293(B)             0.280(B)
+eot                    0.738(W)             0.349(B)             0.411(B)             0.400(B)
+ensemble               0.689(W)             0.467(W)             0.489(B)             0.481(B)
+dynamic                0.670(W)             0.492(W)             0.516(B)             0.490(B)
+(W=白盒 surrogate, B=黑盒迁移)

@@ -8,10 +8,25 @@ import torch
 from torch.utils.data import DataLoader
 
 from .config import Config
-from .dataset import collate_single
+from .dataset import collate_batch
 from .detectors import Detector
 from .losses import detection_suppress_loss, tv_loss
 from .patch import Patch, apply_patch
+
+
+def _dynamic_weights(losses, init_conf, tau: float, device) -> torch.Tensor:
+    """动态集成权重：当前置信度相对初始越高（越难攻击）的模型权重越大。
+
+    h_m = S_m(t) / S_m(0)，w = softmax(h / tau)。S_m(0) 未记录全时退化为均匀权重。
+    """
+    n = len(losses)
+    if any(c is None for c in init_conf):
+        return torch.full((n,), 1.0 / n, device=device)
+    h = torch.zeros(n, device=device)
+    for i, (l, c0) in enumerate(zip(losses, init_conf)):
+        if l is not None:
+            h[i] = l.detach() / (c0 + 1e-6)
+    return torch.softmax(h / tau, dim=0)
 
 
 def _optimize_step(patch: Patch, opt, momentum: torch.Tensor, cfg: Config) -> None:
@@ -60,46 +75,57 @@ def train_patch(
     if len(weights) != n_models:
         raise ValueError(f"ensemble_weights 长度 {len(weights)} 与替代模型数 {n_models} 不匹配")
 
-    loader = DataLoader(dataset, batch_size=1, shuffle=True, collate_fn=collate_single)
+    # 真批处理：cfg.batch_size 张图作为一个 batch 一起前向/反向，充分利用 GPU 并行。
+    loader = DataLoader(dataset, batch_size=cfg.batch_size, shuffle=True, collate_fn=collate_batch)
+
+    # 动态加权集成：记录每个模型的初始 person 置信度 S_m(0)
+    init_conf = [None] * n_models
 
     global_step = 0
-    step_in_batch = 0
     running_loss = 0.0
     for epoch in range(cfg.epochs):
-        for sample in loader:
-            image, boxes, _ = sample
-            image = image.to(device)
-            boxes = boxes.to(device)
+        for images, boxes_list, _ in loader:
+            images = [img.to(device) for img in images]
+            boxes_list = [b.to(device) for b in boxes_list]
+
+            # 每个模型在 num_eot 次变换下的平均 loss（S_m）
+            per_model = [None] * n_models
+            for _ in range(cfg.num_eot):
+                advs = [apply_patch(img, patch.patch, b, cfg, rng=rng) for img, b in zip(images, boxes_list)]
+                for mi, sur in enumerate(surrogates):
+                    det = sur(advs)
+                    loss = detection_suppress_loss(det, boxes_list, cfg.target_idx, cfg.attack_iou_thr)
+                    if loss is not None:
+                        per_model[mi] = loss if per_model[mi] is None else per_model[mi] + loss
+            per_model = [(l / cfg.num_eot) if l is not None else None for l in per_model]
+
+            # 记录初始置信度（首次出现匹配目标时）
+            for mi, l in enumerate(per_model):
+                if l is not None and init_conf[mi] is None:
+                    init_conf[mi] = l.detach().item()
+
+            # 动态权重 vs 静态权重
+            w = _dynamic_weights(per_model, init_conf, cfg.ensemble_tau, device) if cfg.dynamic_ensemble else weights
 
             total = None
-            for _ in range(cfg.num_eot):
-                adv = apply_patch(image, patch.patch, boxes, cfg, rng=rng)
-                for sur, w in zip(surrogates, weights):
-                    det = sur(adv.unsqueeze(0))
-                    loss = detection_suppress_loss(det, [boxes], cfg.target_idx, cfg.attack_iou_thr)
-                    if loss is None:
-                        continue
-                    total = (w * loss) if total is None else (total + w * loss)
+            for mi, l in enumerate(per_model):
+                if l is None:
+                    continue
+                total = (w[mi] * l) if total is None else (total + w[mi] * l)
 
             if total is None:
                 continue
-            total = total / cfg.num_eot + cfg.tv_lambda * tv_loss(patch.patch)
+            total = total + cfg.tv_lambda * tv_loss(patch.patch)
             running_loss += total.detach().item()
 
             total.backward()
-            step_in_batch += 1
-            if step_in_batch >= cfg.batch_size:
-                _optimize_step(patch, opt, momentum, cfg)
-                global_step += 1
-                if global_step % 10 == 0:
-                    logger(
-                        f"[epoch {epoch:02d} | step {global_step:04d}] "
-                        f"loss={running_loss / (cfg.batch_size * 10):.4f}"
-                    )
-                running_loss = 0.0
-                step_in_batch = 0
-
-    if step_in_batch > 0:
-        _optimize_step(patch, opt, momentum, cfg)
+            _optimize_step(patch, opt, momentum, cfg)
+            global_step += 1
+            if global_step % 10 == 0:
+                logger(
+                    f"[epoch {epoch:02d} | step {global_step:04d}] "
+                    f"loss={running_loss / 10:.4f}"
+                )
+            running_loss = 0.0
 
     return patch

@@ -1,0 +1,98 @@
+{
+  "0.10": {
+    "yolov5s": {
+      "clean_recall": 0.4903370786516854,
+      "attack_recall": 0.16674157303370787,
+      "asr": 0.6700274977085243,
+      "n_clean_det": 1091
+    },
+    "fasterrcnn": {
+      "clean_recall": 0.7555056179775281,
+      "attack_recall": 0.39280898876404496,
+      "asr": 0.49196906603212376,
+      "n_clean_det": 1681
+    },
+    "retinanet": {
+      "clean_recall": 0.562247191011236,
+      "attack_recall": 0.2782022471910112,
+      "asr": 0.5155875299760192,
+      "n_clean_det": 1251
+    },
+    "fcos": {
+      "clean_recall": 0.6737078651685393,
+      "attack_recall": 0.35235955056179774,
+      "asr": 0.4896597731821214,
+      "n_clean_det": 1499
+    },
+    "_surrogates": [
+      "yolov5s",
+      "fasterrcnn"
+    ]
+  },
+  "0.03": {
+    "yolov5s": {
+      "clean_recall": 0.4903370786516854,
+      "attack_recall": 0.38786516853932584,
+      "asr": 0.23373052245646195
+    },
+    "fasterrcnn": {
+      "clean_recall": 0.7555056179775281,
+      "attack_recall": 0.5532584269662921,
+      "asr": 0.2772159428911362
+    },
+    "retinanet": {
+      "clean_recall": 0.562247191011236,
+      "attack_recall": 0.40898876404494383,
+      "asr": 0.28457234212629895
+    },
+    "fcos": {
+      "clean_recall": 0.6737078651685393,
+      "attack_recall": 0.5002247191011236,
+      "asr": 0.27484989993328884
+    }
+  },
+  "0.05": {
+    "yolov5s": {
+      "clean_recall": 0.4903370786516854,
+      "attack_recall": 0.3550561797752809,
+      "asr": 0.29605866177818513
+    },
+    "fasterrcnn": {
+      "clean_recall": 0.7555056179775281,
+      "attack_recall": 0.5325842696629214,
+      "asr": 0.3057703747769185
+    },
+    "retinanet": {
+      "clean_recall": 0.562247191011236,
+      "attack_recall": 0.3860674157303371,
+      "asr": 0.3269384492406075
+    },
+    "fcos": {
+      "clean_recall": 0.6737078651685393,
+      "attack_recall": 0.48,
+      "asr": 0.30820547031354234
+    }
+  },
+  "0.2": {
+    "yolov5s": {
+      "clean_recall": 0.4903370786516854,
+      "attack_recall": 0.03280898876404494,
+      "asr": 0.9349220898258478
+    },
+    "fasterrcnn": {
+      "clean_recall": 0.7555056179775281,
+      "attack_recall": 0.16674157303370787,
+      "asr": 0.7834622248661511
+    },
+    "retinanet": {
+      "clean_recall": 0.562247191011236,
+      "attack_recall": 0.11595505617977528,
+      "asr": 0.7969624300559552
+    },
+    "fcos": {
+      "clean_recall": 0.6737078651685393,
+      "attack_recall": 0.13752808988764045,
+      "asr": 0.8025350233488993
+    }
+  }
+}

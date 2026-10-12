@@ -1,0 +1,31 @@
+[dataset] 预加载 500 张图片到内存...
+[dataset] 预加载完成
+WARNING ⚠️ torchvision==0.29 is incompatible with torch==2.7.
+Run 'pip install torchvision==0.22' to fix torchvision or 'pip install -U torch torchvision' to update both.
+For a full compatibility table see https://github.com/pytorch/vision#installation
+Fusing layers... 
+YOLOv5s summary: 124 layers, 7,225,885 parameters, 0 gradients, 16.4 GFLOPs
+WARNING ⚠️ NMS time limit 0.550s exceeded
+[ratio=0.03 seed=0] yolov5s=0.120 fasterrcnn=0.088 retinanet=0.118 fcos=0.102
+[ratio=0.03 seed=1] yolov5s=0.114 fasterrcnn=0.090 retinanet=0.118 fcos=0.099
+[ratio=0.03 seed=2] yolov5s=0.111 fasterrcnn=0.087 retinanet=0.108 fcos=0.101
+[ratio=0.03] 随机补丁黑盒平均 ASR = 0.108
+[ratio=0.05 seed=0] yolov5s=0.142 fasterrcnn=0.112 retinanet=0.133 fcos=0.128
+[ratio=0.05 seed=1] yolov5s=0.143 fasterrcnn=0.109 retinanet=0.141 fcos=0.126
+[ratio=0.05 seed=2] yolov5s=0.154 fasterrcnn=0.117 retinanet=0.137 fcos=0.129
+[ratio=0.05] 随机补丁黑盒平均 ASR = 0.133
+[ratio=0.1 seed=0] yolov5s=0.254 fasterrcnn=0.149 retinanet=0.202 fcos=0.166
+[ratio=0.1 seed=1] yolov5s=0.250 fasterrcnn=0.155 retinanet=0.193 fcos=0.181
+[ratio=0.1 seed=2] yolov5s=0.250 fasterrcnn=0.164 retinanet=0.202 fcos=0.175
+[ratio=0.1] 随机补丁黑盒平均 ASR = 0.187
+[ratio=0.2 seed=0] yolov5s=0.415 fasterrcnn=0.227 retinanet=0.303 fcos=0.279
+[ratio=0.2 seed=1] yolov5s=0.395 fasterrcnn=0.236 retinanet=0.297 fcos=0.273
+[ratio=0.2 seed=2] yolov5s=0.402 fasterrcnn=0.234 retinanet=0.296 fcos=0.273
+[ratio=0.2] 随机补丁黑盒平均 ASR = 0.287
+
+===== 随机噪声补丁对照 =====
+   ratio      yolov5s   fasterrcnn    retinanet         fcos       BB_avg
+   3.0%        0.115        0.089        0.115        0.101         0.108
+   5.0%        0.146        0.113        0.137        0.128         0.133
+  10.0%        0.251        0.156        0.199        0.174         0.187
+  20.0%        0.404        0.232        0.299        0.275         0.287

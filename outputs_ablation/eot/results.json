@@ -1,0 +1,29 @@
+{
+  "yolov5s": {
+    "clean_recall": 0.4903370786516854,
+    "attack_recall": 0.13213483146067415,
+    "asr": 0.7378551787351054,
+    "n_clean_det": 1091
+  },
+  "fasterrcnn": {
+    "clean_recall": 0.7555056179775281,
+    "attack_recall": 0.503370786516854,
+    "asr": 0.3491969066032124,
+    "n_clean_det": 1681
+  },
+  "retinanet": {
+    "clean_recall": 0.562247191011236,
+    "attack_recall": 0.3384269662921348,
+    "asr": 0.4108713029576339,
+    "n_clean_det": 1251
+  },
+  "fcos": {
+    "clean_recall": 0.6737078651685393,
+    "attack_recall": 0.4152808988764045,
+    "asr": 0.400266844563042,
+    "n_clean_det": 1499
+  },
+  "_surrogates": [
+    "yolov5s"
+  ]
+}
